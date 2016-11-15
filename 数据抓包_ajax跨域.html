@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>搜索一下</title>
+    <style type="text/css">
+        #sug{
+            position: absolute;
+            left: 50%;
+            margin-left: -150px;
+            width: 300px;
+            background: lightGreen;
+            height: 40px;
+            text-align: center;
+        }
+        #sug input{
+            margin-top: 10px;
+        }
+        #list{
+            position: absolute;
+            left: 50%;
+            top:50px;
+            width: 200px;
+            margin-left: -150px;
+            height: auto;
+            background: lightBlue;
+            display: none;
+        }
+        #list ul{
+            padding-left: 0px;
+            margin: 0px;
+        }
+        #list ul li{
+            background: lightGray;
+            line-height: 30px;
+            list-style: none;
+            padding-left: 10px;
+            margin-top: 0px;
+            cursor: pointer;
+        }
+        #list ul li.on{
+            background: lightGreen;
+        }
+    </style>
+    <script src="jQuery-3.1.0/jquery-3.1.0.min.js"></script>
+</head>
+<body>
+
+<script type="text/javascript">
+
+    var abc = function (data){
+        console.log(data.s);
+
+//        var ls = data.s;//结果列表
+//        for(i = 0;i < ls.length; i ++){
+//
+//            var tag = "";
+//            tag += "<ul><li>"+ls[0]+"</li>";
+//            tag += "<ul><li>"+ls[1]+"</li>";
+//            tag += "<ul><li>"+ls[2]+"</li>";
+//            tag += "<ul><li>"+ls[3]+"</li>";
+//            tag += "<li>"+ls[4]+"</li></ul>";
+//
+//            var div = document.createElement("div");
+//            div.innerHTML = tag;
+//            $("#list").appendChild(div);
+//            $("#list").show();
+        $("#list").html("");
+        var ul = $("<ul></ul>");
+        $.each(data.s,function(i,element){
+            var e = $('<li></li>').append(element);
+            $(ul).append(e);
+        });
+        $("#list").append(ul).show();
+        $("#list").find("li").hover(function(){
+            $(this).css("background","lightGreen");
+        },function(){
+            $(this).css("background","lightGray");
+        });
+        $("#list").click(function(e){
+            $("#keyWord").val($(e.target).text());
+            $(this).hide();
+        })
+
+
+    };
+    
+    $(function(){
+        $("#keyWord").keyup(function(){
+            $.ajax({
+                type:"GET",
+                async:true,
+                url:'https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd='+$("#keyWord").val(),
+                dataType:"jsonp",
+                jsonp:'cb',
+                success:abc
+            })
+        })
+    })
+
+</script>
+
+<div id="sug">
+    <div>
+        <input type="text" id="keyWord" autocomplete=off>
+        <input type="button" value="百度一下" id="btn">
+    </div>
+</div>
+<div id="list">
+</div>
+</body>
+</html>
